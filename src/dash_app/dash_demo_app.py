@@ -1,17 +1,27 @@
 # https://dash.plotly.com/tutorial
 # Import packages
-from dash import Dash, html, dcc, callback, Output, Input
+from dash import Dash, html, dcc, callback, Output, Input, dash_table, dcc
 import dash_ag_grid as dag
 import pandas as pd
 import plotly.express as px
 import dash_bootstrap_components as dbc
+import dash_ag_grid as dag
+from src.utils.line_chart import line_chart
+from src.data.data import get_event_data
+import json 
+
 
 # Incorporate data
-df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
+#df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
 
 # Initialize the app - incorporate a Dash Bootstrap theme
 external_stylesheets = [dbc.themes.CERULEAN]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
+para_data = json.loads(get_event_data())
+df = pd.DataFrame(para_data)
+df['start'] = pd.to_datetime(df['start'], dayfirst=True)
+df['end'] = pd.to_datetime(df['end'], dayfirst=True)
+line_chart("participants", df)
 
 # App layout
 app.layout = dbc.Container([
@@ -38,6 +48,11 @@ app.layout = dbc.Container([
             dcc.Graph(figure={}, id='my-first-graph-final')
         ], width=6),
     ]),
+    dag.AgGrid(
+        rowData=df.to_dict("records"),
+        columnDefs=[{"field": col} for col in df.columns]
+    ),
+    dcc.Graph(figure=line_chart("participants", df))
 
 ], fluid=True)
 
