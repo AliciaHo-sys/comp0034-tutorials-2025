@@ -48,11 +48,13 @@ app.layout = dbc.Container([
             dcc.Graph(figure={}, id='my-first-graph-final')
         ], width=6),
     ]),
+    dcc.Graph(figure=line_chart("participants", df)),
+   
     dag.AgGrid(
         rowData=df.to_dict("records"),
         columnDefs=[{"field": col} for col in df.columns]
     ),
-    dcc.Graph(figure=line_chart("participants", df))
+    
 
 ], fluid=True)
 
