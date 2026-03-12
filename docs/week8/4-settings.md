@@ -153,8 +153,7 @@ def get_settings() -> SettingsBase:
     return mapping.get(env, SettingsDevelopment)()
 ```
 
-You can then use the settings in the code, for 
-
-
+`@lru_cache` is used to cache the settings so that it is read once at start up and then cached. 
+This is the approach recommended in the [FastAPI documentation](https://fastapi.tiangolo.com/advanced/settings/?h=%40lru_cache#creating-the-settings-only-once-with-lru-cache).
 
 [Next activity](5-auth.md)
